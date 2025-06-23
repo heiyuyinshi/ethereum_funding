@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: UNLICENSED
 
 pragma solidity >=0.7.0 <0.9.0;
 
@@ -14,14 +15,30 @@ contract Funding {
     // 4. 每个人支持多少钱
     uint256 public supportMoney;
 
-    // 5. 项目持续多少时间，单位s
+    // 5. 项目结束时间
     uint256 public endTime;
 
-    constructor(string memory _projectName, uint256 _targetMoney, uint256 _supportMoney, uint256 _duration) public {
+    // 维护所有参与者
+    address[] investors;
+
+    constructor(string memory _projectName, uint256 _targetMoney, uint256 _supportMoney, uint256 _duration) {
         manager = msg.sender;
         projectName = _projectName;
         targetMoney = _targetMoney;
         supportMoney = _supportMoney;
         endTime = block.timestamp + _duration;
+    }
+
+    function invest() payable public {
+        require(msg.value == supportMoney);
+        investors.push(msg.sender);
+    }
+
+    function getBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
+    function getInvestors()public view returns (address[] memory) {
+        return investors;
     }
 }
